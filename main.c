@@ -9,5 +9,5 @@ int main(void){
         printf("gg\n");
     }
 
-    printf("nhjgg");
+    printf("nhjgg\n");
 }
