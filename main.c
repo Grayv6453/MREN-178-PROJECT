@@ -10,4 +10,5 @@ int main(void){
     }
 
     printf("nhjgg\n");
+    return 0;
 }
