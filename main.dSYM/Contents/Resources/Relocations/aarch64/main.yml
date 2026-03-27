@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/jayden/Documents/GitHub/MREN-178-PROJECT/main'
+relocations:     []
+...
