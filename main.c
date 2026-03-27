@@ -10,7 +10,13 @@ void addtoqueue(void){
     //IDEA we keep track of the rear for each section,
     //maybe then we could use a circular queue (if we have it 
     //at a set size due to set amount of "resources" in the big H)
+
+    //ANOTHER IDEA we could have mutliple circular queues, one for each
+    //triage level. This way would make inserting easier and keep track
+    //of number of patients in each triage. prob takes more storage,
+    //and deleting and/or displaying queue might get a little weird tho
     
+
 }
 
 void showmedasauce(void){
