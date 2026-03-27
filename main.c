@@ -15,21 +15,25 @@ int main(void){
     // each one makes a node, and is added to the queue.
 
     //maybe when a user runs the code, they choose between 
-    //entering a new user, or seeing the current queu
-
-    printf("Entering a new user (1), or view queue (2).\nEnter 1 or 2\n");
+    //entering a new user, or seeing the current queue
+    
     int iChoice;
-    scanf("%d", &iChoice);
-    if(iChoice == 1)
-    {
-        //entering a new user
+    while (iChoice != 1 || iChoice != 2){
+        printf("Entering a new user (1), or view queue (2).\nEnter 1 or 2\n");
+    
+        scanf("%d", &iChoice);
+        if(iChoice == 1)
+        {
+            //entering a new user
+        }
+        else if(iChoice == 2){
+            //viewing queue
+        }
+        else{
+           //error
+            printf("Error, try again.");
+        }
     }
-    else if(iChoice == 2){
-        //viewing queue
-    }
-    else{
-        //error
-    }
-
+    
     return 0;
 }
