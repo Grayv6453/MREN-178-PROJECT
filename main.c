@@ -31,9 +31,8 @@ int main(void){
         //entering a new user, or seeing the current queue
         
         int iChoice;
-        while (iChoice != 1 || iChoice != 2){
+        do {
             printf("Entering a new user (1), viewing queue (2), or quitting program (3) ?.\nEnter 1 or 2 or 3\n");
-        
             scanf("%d", &iChoice);
             if(iChoice == 1)
             {
@@ -54,7 +53,7 @@ int main(void){
             //error
                 printf("Error, try again.\n");
             }
-        }
+        }while (iChoice > -1 && iChoice < 4);
     }   
     return 0;
 }
