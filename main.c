@@ -6,6 +6,11 @@
 
 void addtoqueue(void){
     //adding a user to the queue
+
+    //IDEA we keep track of the rear for each section,
+    //maybe then we could use a circular queue (if we have it 
+    //at a set size due to set amount of "resources" in the big H)
+    
 }
 
 void showmedasauce(void){
