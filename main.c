@@ -3,8 +3,22 @@
 #include <string.h>
 #include <stdbool.h>
 
+
+//Heap
+//Patient added, inserted based on priority to heap
+
+//have a hash table with a limited number of beds, doctors, and resources
+//Starting at root, assign resources from hash table (remove them from table temporarily)
+//based on severity of root, then move to next node in the heap
+
 //max resource the hospital can distribute
-#define MAX_SOMETHINGS 1000;
+#define MAX_BEDS 1000
+#define TOTAL_DOCTORS 100
+#define TOTAL_CLANKERS 500
+
+//Max Heap Size my n
+#define MHS 2000
+
 
 enum triagelevel{
     Epstein,
@@ -14,25 +28,27 @@ enum triagelevel{
     Flopping
 };
 
+enum status{
+    waiting,
+    beingtreated
+};
+
+//might add temperature, heart rate, and other symptoms of being a league player
 typedef struct patient{
     int id;
     enum triagelevel tl;
+    enum status statusrn;
 };
+
+typedef struct{
+    struct patient patients[MHS];
+    int currentpatients
+}daheap;
+
 
 
 //insert patient into queue, 
 void addtoqueue(void){
-    //adding a user to the queue
-
-    //IDEA we keep track of the rear for each section,
-    //maybe then we could use a circular queue (if we have it 
-    //at a set size due to set amount of "resources" in the big H)
-
-    //ANOTHER IDEA we could have mutliple circular queues, one for each
-    //triage level. This way would make inserting easier and keep track
-    //of number of patients in each triage. prob takes more storage,
-    //and deleting and/or displaying queue might get a little weird tho
-
     //BETTER IDEA heap (priority queue)
 
 
