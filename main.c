@@ -20,6 +20,7 @@ typedef struct patient{
 };
 
 
+//insert patient into queue, 
 void addtoqueue(void){
     //adding a user to the queue
 
@@ -31,6 +32,8 @@ void addtoqueue(void){
     //triage level. This way would make inserting easier and keep track
     //of number of patients in each triage. prob takes more storage,
     //and deleting and/or displaying queue might get a little weird tho
+
+    //BETTER IDEA heap (priority queue)
 
 
 }
