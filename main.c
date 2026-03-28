@@ -3,6 +3,22 @@
 #include <string.h>
 #include <stdbool.h>
 
+//max resource the hospital can distribute
+#define MAX_SOMETHINGS 1000;
+
+enum triagelevel{
+    Epstein,
+    Aids,
+    Tyrese,
+    Jew,
+    Flopping
+};
+
+typedef struct patient{
+    int id;
+    enum triagelevel tl;
+};
+
 
 void addtoqueue(void){
     //adding a user to the queue
