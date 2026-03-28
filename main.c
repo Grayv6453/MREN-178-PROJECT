@@ -34,24 +34,35 @@ enum status{
 };
 
 //might add temperature, heart rate, and other symptoms of being a league player
-typedef struct patient{
+typedef struct {
     int id;
     enum triagelevel tl;
     enum status statusrn;
-};
+}patient;
 
 typedef struct{
-    struct patient patients[MHS];
+    patient patients[MHS];
     int currentpatients
 }daheap;
 
-
+void swappingtheps(patient* uno, patient* dos){
+    patient temp = *uno;
+    *uno = *dos;
+    *dos = temp;
+}
 
 //insert patient into queue, 
-void addtoqueue(void){
+void addtoqueue(daheap* heap, patient CurrPat){
     //BETTER IDEA heap (priority queue)
+    //if the heap is full
+    if(heap->currentpatients >= MHS){
+        printf("step aside bub, too many neighbours in here\n");
+        return;
+    }
 
+    //add the new patient to the heap
 
+    //do the sorting(saiyan) walk
 }
 
 void showmedasauce(void){
