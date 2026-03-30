@@ -84,8 +84,13 @@ int getOUT(daheap* heap){
 }
 
 
-void showmedasauce(void){
+void showmedasauce(daheap* heap){
     //display the current queue
+    for(int i = 0; i< heap->currentpatients; i++){
+        printf("\nID: %d\ntriage level: %d\ntreatment status: %d\n", heap->patients[i].id, heap->patients[i].tl, heap->patients[i].statusrn);
+    }
+
+    //maybe display the waiting times for different triage ranges/levels as well?
 }
 
 int main(void){
@@ -110,14 +115,13 @@ int main(void){
         //maybe when a user runs the code, they choose between 
         //entering a new user, or seeing the current queue
         
-        int iChoice;
+        int iChoice = 0;
         do {
-            printf("Entering a new user (1), viewing queue (2), or quitting program (3) ?.\nEnter 1 or 2 or 3\n");
+            printf("Entering a new user (1), viewing queue (2), or quitting program (3) ?.\nEnter '1' or '2' or '3'\n");
             scanf("%d", &iChoice);
             if(iChoice == 1)
             {
                 //entering a new user
-
                 patient newpatient;
                 printf("Enter ID: ");
                 scanf("%d", &newpatient.id);
@@ -126,11 +130,10 @@ int main(void){
                 printf("\nEnter Triage level: ");
                 scanf("%d", &newpatient.tl);
                 addtoqueue(&heap, newpatient);
-
             }
             else if(iChoice == 2){
                 //viewing queue
-                showmedasauce;
+                showmedasauce(&heap);
             }
             else if(iChoice == 3){
                 //quitting
