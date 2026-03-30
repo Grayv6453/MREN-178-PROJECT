@@ -115,7 +115,7 @@ int main(void){
         //maybe when a user runs the code, they choose between 
         //entering a new user, or seeing the current queue
         
-        int iChoice = 0;
+        int iChoice = 1;
         do {
             printf("Entering a new user (1), viewing queue (2), or quitting program (3) ?.\nEnter '1' or '2' or '3'\n");
             scanf("%d", &iChoice);
@@ -138,13 +138,15 @@ int main(void){
             else if(iChoice == 3){
                 //quitting
                 quit = 1;
+                //so can leave the input loop as well
+                iChoice = -1;
                 printf("Quitting... cya later ni!");
             }
             else{
             //error
                 printf("Error, try again.\n");
             }
-        }while (iChoice > -1 && iChoice < 4);
+        }while (iChoice > 0 && iChoice < 4);
     }   
     return 0;
 }
