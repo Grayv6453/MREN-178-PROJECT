@@ -115,36 +115,80 @@ int main(void){
         //maybe when a user runs the code, they choose between 
         //entering a new user, or seeing the current queue
         
-        int iChoice = 1;
+        int iChoice = 5;
         do {
             printf("Entering a new user (1), viewing queue (2), or quitting program (3) ?.\nEnter '1' or '2' or '3'\n");
-            scanf("%d", &iChoice);
-            if(iChoice == 1)
-            {
-                //entering a new user
-                patient newpatient;
-                printf("Enter ID: ");
-                scanf("%d", &newpatient.id);
-                printf("\nStatus right now, waiting (0) or being treated (1): ");
-                scanf("%d", &newpatient.statusrn);
-                printf("\nEnter Triage level: ");
-                scanf("%d", &newpatient.tl);
-                addtoqueue(&heap, newpatient);
-            }
-            else if(iChoice == 2){
-                //viewing queue
-                showmedasauce(&heap);
-            }
-            else if(iChoice == 3){
-                //quitting
-                quit = 1;
-                //so can leave the input loop as well
-                iChoice = -1;
-                printf("Quitting... cya later ni!");
+            if (scanf("%d", &iChoice) != 1) {
+                // If scanf didn't return 1, the input was invalid.
+                printf("Invalid input! Please enter a number.\n");
+
+                //NOTE to TA: I had to google how to clear the bad input from the buffer
+                // Clear the bad input from the buffer
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF) { }
+                
+                iChoice = -1; // Force the loop to restart safely
             }
             else{
-            //error
-                printf("Error, try again.\n");
+                if(iChoice == 1){
+                //entering a new user
+
+                //IDEA from EthpSTEIN and Jdiddy
+                //prompt user if they want to make a singular entry (1patient), or a file with multiple patients 
+                patient newpatient;
+                printf("Enter ID: ");
+                //if invalid ID is entered
+                if(scanf("%d", &newpatient.id) != 1){
+                    newpatient.id = -1;
+                    // Clear the bad input from the buffer
+                    int c;
+                    while ((c = getchar()) != '\n' && c != EOF) { }
+                }
+                printf("\nStatus right now, waiting (0) or being treated (1): ");
+                //if invalid status is entered
+                if(scanf("%d", &newpatient.statusrn) != 1){
+                    newpatient.statusrn = -1;
+                    // Clear the bad input from the buffer
+                    int c;
+                    while ((c = getchar()) != '\n' && c != EOF) { }
+                }
+                printf("\nEnter Triage level: ");
+                //if invalid triage level is entered
+                if(scanf("%d", &newpatient.tl) != 1){
+                    newpatient.tl = -1;
+                    // Clear the bad input from the buffer
+                    int c;
+                    while ((c = getchar()) != '\n' && c != EOF) { }
+                }
+                //if any of the inputs were invalid, don't add it the the heap
+                if(newpatient.id == -1 || newpatient.statusrn == -1 || newpatient.tl == -1){
+                    printf("Error in input, patient not added to queue.");
+                }
+                else{
+                    addtoqueue(&heap, newpatient);
+                    //now check if the patient at the end of the queue is healthy
+                    if(heap.patients[heap.currentpatients - 1].tl == 0){
+                        getOUT(&heap);
+                        printf("patient was healthy, loading the slingshot...\nComplete, ejecting!\n");
+                    }
+                }
+                
+                }
+                else if(iChoice == 2){
+                    //viewing queue
+                    showmedasauce(&heap);
+                }
+                else if(iChoice == 3){
+                    //quitting
+                    quit = 1;
+                    //so can leave the input loop
+                    iChoice = -1;
+                    printf("Quitting... cya later ni!");
+                }
+                else{
+                //error
+                    printf("Error, try again.\n");
+                }
             }
         }while (iChoice > 0 && iChoice < 4);
     }   
