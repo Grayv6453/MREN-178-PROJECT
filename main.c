@@ -42,10 +42,10 @@ typedef struct {
 
 typedef struct{
     patient patients[MHS];
-    int currentpatients
+    int currentpatients;
 }daheap;
 
-void swappingtheps(patient* uno, patient* dos){
+void swapenis(patient* uno, patient* dos){
     patient temp = *uno;
     *uno = *dos;
     *dos = temp;
@@ -61,8 +61,20 @@ void addtoqueue(daheap* heap, patient CurrPat){
     }
 
     //add the new patient to the heap
+    int currentpeen = heap->currentpatients;
+    heap->patients[currentpeen] = CurrPat;
+    heap->currentpatients++;
 
-    //do the sorting(saiyan) walk
+    //do the sorting(saiyan) walk (compare with parent, swap if necessary)
+    int daddynumber = (currentpeen - 1)/2;
+
+    while (currentpeen > 0 && (heap->patients[currentpeen]).tl > (heap->patients[daddynumber]).tl){
+        swapenis(&heap->patients[currentpeen], &heap->patients[daddynumber]);
+
+        //Move up da tree
+        currentpeen = daddynumber;
+        daddynumber = (currentpeen - 1)/2;
+    }
 }
 
 void showmedasauce(void){
