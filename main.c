@@ -19,32 +19,22 @@
 //Max Heap Size my n
 #define MHS 2000
 
-
-enum triagelevel{
-    Epstein,
-    Aids,
-    Tyrese,
-    Jew,
-    Flopping,
-    Healthy
-};
-
-enum status{
-    waiting,
-    beingtreated
-};
-
 //might add temperature, heart rate, and other symptoms of being a league player
 typedef struct {
     int id;
-    enum triagelevel tl;
-    enum status statusrn;
+    int tl;
+    int statusrn;
 }patient;
 
 typedef struct{
     patient patients[MHS];
     int currentpatients;
 }daheap;
+
+//initialize the heap
+void heapbirth(daheap* heap){
+    heap->currentpatients = 0;
+}
 
 void swapenis(patient* uno, patient* dos){
     patient temp = *uno;
@@ -105,6 +95,10 @@ int main(void){
 
     printf("nhjgg\n");
 
+    //create the heap and shit
+    daheap heap;
+    heapbirth(&heap);
+
     //lowkey forgot that this program should keep running until
     //user is done with (quit function)
     int quit = 0;
@@ -123,7 +117,15 @@ int main(void){
             if(iChoice == 1)
             {
                 //entering a new user
-                addtoqueue;
+
+                patient newpatient;
+                printf("Enter ID: ");
+                scanf("%d", &newpatient.id);
+                printf("\nStatus right now, waiting (0) or being treated (1): ");
+                scanf("%d", &newpatient.statusrn);
+                printf("\nEnter Triage level: ");
+                scanf("%d", &newpatient.tl);
+                addtoqueue(&heap, newpatient);
 
             }
             else if(iChoice == 2){
