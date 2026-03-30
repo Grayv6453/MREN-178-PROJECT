@@ -25,7 +25,8 @@ enum triagelevel{
     Aids,
     Tyrese,
     Jew,
-    Flopping
+    Flopping,
+    Healthy
 };
 
 enum status{
@@ -76,6 +77,22 @@ void addtoqueue(daheap* heap, patient CurrPat){
         daddynumber = (currentpeen - 1)/2;
     }
 }
+
+//removing from heap, deletes from the end since that is where a healthy person would end up.
+//return id of the patient booted
+int getOUT(daheap* heap){
+    if(heap->currentpatients <= 0){
+        printf("no patients to boot...\n");
+        return -1;
+    }
+    //id of the patient about to get deleted, the one at the very end
+    int bootedid = heap->patients[(heap->currentpatients)-1].id;
+
+    //just decrement the size of the array to make that last column unavailable.
+    heap->currentpatients--;
+    return bootedid;
+}
+
 
 void showmedasauce(void){
     //display the current queue
