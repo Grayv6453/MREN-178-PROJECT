@@ -122,14 +122,6 @@ int getOUT(daheap* heap, patient* booty){
     return 1;
 }
 
-void showmedasauce(daheap* heap){
-    //display the current queue
-    for(int i = 0; i< heap->currentpatients; i++){
-        printf("\nID: %d\ntriage level: %d\n", heap->patients[i].id, heap->patients[i].tl);
-    }
-
-    //maybe display the waiting times for different triage ranges/levels as well?
-}
 
 //hold on, I forgot to implement how to update an existing patient record gimme a sec
 // Searches for a patient by ID. Returns their index if found, or -1 if not found.
@@ -280,7 +272,7 @@ doctor *doc_table_pop(doctor* doc_table, int size, int doctor_id) {
         // If prev == NULL, we are at the head of chain.
         if (current->next == NULL) {
             // current is the only node in the chain
-            current->doctor_id = -1; // mark doctor as empty
+            current->doctor_id = -1; // mark doctor a1s empty
             current->patient_id = -1;
         } else {
             // Move node after current up
@@ -379,14 +371,17 @@ int main(void){
                             updih(&heap, nibibeenheforeu, newpatient.id);
                         }
                         addtoqueue(&heap, newpatient);
+                        
+
                         //if there are doctors available (reminder to ADD IF STATEMENT HERE once hash is implemented)
                         //{
                         patient booted;
                         //should always be true
-                        if(getOUT(&heap, &booted)){
+                        //if(getOUT(&heap, &booted)==1){
                             //now sned patient to hash, will do once implemented
-                            printf("\nPatient %d was assigned doctor (ID).\n", booted.id);
-                        }
+                        //    printf("\nPatient %d was assigned doctor (1ID).\n", booted.id);
+                            
+                        //}
 
                         //}
                         //else
@@ -416,7 +411,10 @@ int main(void){
                 }
                 else if(iChoice == 3){
                     //viewing queue
-                    showmedasauce(&heap);
+                    
+                    for(int i = 0; i <= heap.currentpatients; i++){
+                        printf("ID: %d\nTriage level: %d\n\n", heap.patients[i].id, heap.patients[i].tl);
+                    }
                 }
                 else if(iChoice == 4){
                     //quitting
