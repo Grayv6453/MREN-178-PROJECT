@@ -42,7 +42,8 @@ void swapenis(patient* uno, patient* dos){
 //insert patient into queue, 
 void addtoqueue(daheap* heap, patient CurrPat){
     //BETTER IDEA heap (priority queue)
-    //if the heap is full
+    //if the heap is full (limit to how many people can be added to the waiting list)
+    //only so many people can be in the waiting line
     if(heap->currentpatients >= MHS){
         printf("step aside bub, too many neighbours in here\n");
         return;
