@@ -7,9 +7,7 @@
 //Heap
 //Patient added, inserted based on priority to heap
 
-//have a hash table with a limited number of beds, doctors, and resources
-//Starting at root, assign resources from hash table (remove them from table temporarily)
-//based on severity of root, then move to next node in the heap
+//Starting at root, remove patient from heap and assign doctor in hash table
 
 //max resource the hospital can distribute
 #define MAX_BEDS 1000
@@ -23,7 +21,6 @@
 typedef struct {
     int id;
     int tl;
-    int statusrn;
 }patient;
 
 typedef struct{
@@ -68,30 +65,57 @@ void addtoqueue(daheap* heap, patient CurrPat){
     }
 }
 
-//removing from heap, deletes from the end since that is where a healthy person would end up.
-//return id of the patient booted
-int getOUT(daheap* heap){
+// The bubble-down process
+void heapify(daheap* heap, int index) {
+    int largest = index;
+    int leftChild = 2 * index + 1;
+    int rightChild = 2 * index + 2;
+
+    // Check if the left child exists and is greater than the current node
+    if (leftChild < heap->patients[leftChild].tl && heap->patients[leftChild].tl > heap->patients[largest].tl) {
+        largest = leftChild;
+    }
+
+    // Check if the right child exists and is greater than the largest so far
+    if (rightChild < heap->currentpatients && heap->patients[rightChild].tl > heap->patients[largest].tl) {
+        largest = rightChild;
+    }
+
+    // If the largest is not the current node, swap and continue heapifying
+    if (largest != index) {
+        swap(&heap->patients[index], &heap->patients[largest]);
+        heapify(heap, largest);
+    }
+}
+
+//removing from heap, deletes from root
+int getOUT(daheap* heap, patient* booty){
     if(heap->currentpatients <= 0){
         printf("no patients to boot...\n");
         return -1;
     }
     //id of the patient about to get deleted, the one at the very end
-    int bootedid = heap->patients[(heap->currentpatients)-1].id;
-
-    //just decrement the size of the array to make that last column unavailable.
+    *booty = heap->patients[0];
     heap->currentpatients--;
-    return bootedid;
+
+    //bubble down
+    heapify(heap, 0);
+    return 1;
 }
 
 
 void showmedasauce(daheap* heap){
     //display the current queue
     for(int i = 0; i< heap->currentpatients; i++){
-        printf("\nID: %d\ntriage level: %d\ntreatment status: %d\n", heap->patients[i].id, heap->patients[i].tl, heap->patients[i].statusrn);
+        printf("\nID: %d\ntriage level: %d\ntreatment status: %d\n", heap->patients[i].id, heap->patients[i].tl);
     }
 
     //maybe display the waiting times for different triage ranges/levels as well?
 }
+
+//hold on, I forgot to implement how to update an existing patient record gimme a sec
+
+
 
 int main(void){
     for(int i = 0; i<5; i++){
@@ -115,9 +139,9 @@ int main(void){
         //maybe when a user runs the code, they choose between 
         //entering a new user, or seeing the current queue
         
-        int iChoice = 5;
+        int iChoice = -1;
         do {
-            printf("Entering a new user (1), viewing queue (2), or quitting program (3) ?.\nEnter '1' or '2' or '3'\n");
+            printf("Entering a new user (1), discharging patient (2), view waiting list (3), or quitting program (4) ?.\nEnter '1', '2', '3', or '4'\n");
             if (scanf("%d", &iChoice) != 1) {
                 // If scanf didn't return 1, the input was invalid.
                 printf("Invalid input! Please enter a number.\n");
@@ -127,7 +151,8 @@ int main(void){
                 int c;
                 while ((c = getchar()) != '\n' && c != EOF) { }
                 
-                iChoice = -1; // Force the loop to restart safely
+                //you alr know we loopin' again yung blud
+                iChoice = -1;
             }
             else{
                 if(iChoice == 1){
@@ -144,14 +169,6 @@ int main(void){
                     int c;
                     while ((c = getchar()) != '\n' && c != EOF) { }
                 }
-                printf("\nStatus right now, waiting (0) or being treated (1): ");
-                //if invalid status is entered
-                if(scanf("%d", &newpatient.statusrn) != 1){
-                    newpatient.statusrn = -1;
-                    // Clear the bad input from the buffer
-                    int c;
-                    while ((c = getchar()) != '\n' && c != EOF) { }
-                }
                 printf("\nEnter Triage level: ");
                 //if invalid triage level is entered
                 if(scanf("%d", &newpatient.tl) != 1){
@@ -161,24 +178,44 @@ int main(void){
                     while ((c = getchar()) != '\n' && c != EOF) { }
                 }
                 //if any of the inputs were invalid, don't add it the the heap
-                if(newpatient.id == -1 || newpatient.statusrn == -1 || newpatient.tl == -1){
+                if(newpatient.id == -1 || newpatient.tl == -1){
                     printf("Error in input, patient not added to queue.");
                 }
                 else{
                     addtoqueue(&heap, newpatient);
-                    //now check if the patient at the end of the queue is healthy
-                    if(heap.patients[heap.currentpatients - 1].tl == 0){
-                        getOUT(&heap);
-                        printf("patient was healthy, loading the slingshot...\nComplete, ejecting!\n");
-                    }
+                    //if there are doctors available (reminder to ADD IF STATEMENT HERE once hash is implemented)
+                    patient booted;
+                    getOUT(&heap, &booted);
+                    //now sned patient to hash, will do once implemented
+                    printf("Patient %d was assigned doctor (ID).\n", booted.id);
+                    //else
+                    printf("No doctors available, added to waiting list.\nPatient is number something in line.\n");
+                    //^^ maybe I can add some way to see position in line later
                 }
                 
                 }
+                //if dischargin a patient
                 else if(iChoice == 2){
+                    //dishcharge them
+                    printf("Doctor (ID) has discharded patient (ID)");
+
+                    //now check if there is a patient waiting to be treated
+                    //-1 is an invalid id
+                    if(heap.patients[0].id != -1){
+                        patient booted;
+                        getOUT(&heap, &booted);
+                        //now sned patient to hash, will do once implemented
+                        printf("Patient %d was assigned doctor (ID).\n", booted.id);
+                    }
+                    else{
+                        printf("Doctor (ID) is now on standby");
+                    }
+                }
+                else if(iChoice == 3){
                     //viewing queue
                     showmedasauce(&heap);
                 }
-                else if(iChoice == 3){
+                else if(iChoice == 4){
                     //quitting
                     quit = 1;
                     //so can leave the input loop
@@ -190,7 +227,7 @@ int main(void){
                     printf("Error, try again.\n");
                 }
             }
-        }while (iChoice > 0 && iChoice < 4);
+        }while (iChoice > 0 && iChoice < 5);
     }   
     return 0;
 }
