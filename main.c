@@ -13,6 +13,7 @@
 #define MAX_BEDS 1000
 #define TOTAL_DOCTORS 100
 #define TOTAL_CLANKERS 500
+#define DOC_TBL_SIZE 23
 
 //Max Heap Size my n
 #define MHS 2000
@@ -27,6 +28,23 @@ typedef struct{
     patient patients[MHS];
     int currentpatients;
 }daheap;
+
+typedef struct {
+    int patient_id;
+    int bed_num;
+} bed;
+
+typedef struct {
+    int doctor_id;
+    int patient_id;
+    struct doctor* next; // for hash table chaining
+} doctor;
+
+typedef struct {
+    doctor* arr[TOTAL_DOCTORS];
+    int front;
+    int rear;
+} doc_queue;
 
 //initialize the heap
 void heapbirth(daheap* heap){
@@ -171,6 +189,8 @@ void updih(daheap* heap, int index, int newaidslevel) {
         }
     }
     printf("Patient's position in queue updated, now in position (position).\n");
+}
+
 doc_queue* init_doc_queue() {
     doc_queue* q = (doc_queue*)malloc(sizeof(doc_queue));
     if (q == NULL) {
