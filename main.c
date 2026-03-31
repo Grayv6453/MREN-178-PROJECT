@@ -102,7 +102,7 @@ void heapify(daheap* heap, int index) {
 
     // If the largest is not the current node, swap and continue heapifying
     if (largest != index) {
-        swap(&heap->patients[index], &heap->patients[largest]);
+        swapenis(&heap->patients[index], &heap->patients[largest]);
         heapify(heap, largest);
     }
 }
@@ -125,7 +125,7 @@ int getOUT(daheap* heap, patient* booty){
 void showmedasauce(daheap* heap){
     //display the current queue
     for(int i = 0; i< heap->currentpatients; i++){
-        printf("\nID: %d\ntriage level: %d\ntreatment status: %d\n", heap->patients[i].id, heap->patients[i].tl);
+        printf("\nID: %d\ntriage level: %d\n", heap->patients[i].id, heap->patients[i].tl);
     }
 
     //maybe display the waiting times for different triage ranges/levels as well?
