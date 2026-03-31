@@ -114,8 +114,64 @@ void showmedasauce(daheap* heap){
 }
 
 //hold on, I forgot to implement how to update an existing patient record gimme a sec
+// Searches for a patient by ID. Returns their index if found, or -1 if not found.
+int findoldhead(daheap* heap, int updatedIDih){
+    for (int i = 0; i < heap->currentpatients; i++) {
+        if (heap->patients[i].id == updatedIDih) {
+            //found that matafaka
+            return i;
+        }
+    }
+    return -1; // Not in the system
+}
 
+void updih(daheap* heap, int index, int newaidslevel) {
+    int oldaidslevel = heap->patients[index].tl;
+    
+    // Update the values
+    heap->patients[index].tl = newaidslevel;
 
+    // If their priority went up (they dying harder), bubble up
+    if (newaidslevel > oldaidslevel) {
+        int currentpeen = index;
+        int daddynumber = (currentpeen - 1) / 2;
+
+        while (currentpeen > 0 && heap->patients[currentpeen].tl > heap->patients[daddynumber].tl) {
+            swapenis(&heap->patients[currentpeen], &heap->patients[daddynumber]);
+            currentpeen = daddynumber;
+            daddynumber = (currentpeen - 1) / 2;
+        }
+    } 
+    // If their priority went down (they're somehow doing better?), bubble down
+    else if (newaidslevel < oldaidslevel) {
+        int currentpeen = index;
+        while (1) {
+            int largest = currentpeen;
+            int leftChild = 2 * currentpeen + 1;
+            int rightChild = 2 * currentpeen + 2;
+
+            // if left child is larger, set largest to left child
+            if (leftChild < heap->currentpatients && heap->patients[leftChild].tl > heap->patients[largest].tl) {
+                largest = leftChild;
+            }
+            // if right child is larger, set largest to right child
+            if (rightChild < heap->currentpatients && heap->patients[rightChild].tl > heap->patients[largest].tl) {
+                largest = rightChild;
+            }
+
+            // our parent is no longer the largest, swap em down with the current largest
+            if (largest != currentpeen) {
+                swapenis(&heap->patients[currentpeen], &heap->patients[largest]);
+                //now that position in array has changed, set it to where it got swapped to
+                currentpeen = largest;
+            } else {
+                //it's in the right spot now, stop
+                break;
+            }
+        }
+    }
+    printf("Patient's position in queue updated, now in position (position).\n");
+}
 
 int main(void){
     for(int i = 0; i<5; i++){
@@ -179,15 +235,25 @@ int main(void){
                 }
                 //if any of the inputs were invalid, don't add it the the heap
                 if(newpatient.id == -1 || newpatient.tl == -1){
-                    printf("Error in input, patient not added to queue.");
+                    printf("\nError in input, patient not added to queue.\n");
                 }
                 else{
+                    int nibibeenheforeu = findoldhead(&heap, newpatient.id);
+                    //if patient is already in waiting list, update position according to most recent status
+                    if(nibibeenheforeu != -1){
+                        updih(&heap, nibibeenheforeu, newpatient.id);
+                    }
                     addtoqueue(&heap, newpatient);
                     //if there are doctors available (reminder to ADD IF STATEMENT HERE once hash is implemented)
+                    //{
                     patient booted;
-                    getOUT(&heap, &booted);
-                    //now sned patient to hash, will do once implemented
-                    printf("Patient %d was assigned doctor (ID).\n", booted.id);
+                    //should always be true
+                    if(getOUT(&heap, &booted)){
+                        //now sned patient to hash, will do once implemented
+                        printf("\nPatient %d was assigned doctor (ID).\n", booted.id);
+                    }
+
+                    //}
                     //else
                     printf("No doctors available, added to waiting list.\nPatient is number something in line.\n");
                     //^^ maybe I can add some way to see position in line later
@@ -196,19 +262,21 @@ int main(void){
                 }
                 //if dischargin a patient
                 else if(iChoice == 2){
-                    //dishcharge them
-                    printf("Doctor (ID) has discharded patient (ID)");
+                    //dishcharge them, maybe doctor enters their id and patients id
+                    printf("Doctor (ID) has discharded patient (ID)\n");
 
                     //now check if there is a patient waiting to be treated
                     //-1 is an invalid id
                     if(heap.patients[0].id != -1){
                         patient booted;
-                        getOUT(&heap, &booted);
-                        //now sned patient to hash, will do once implemented
-                        printf("Patient %d was assigned doctor (ID).\n", booted.id);
+                        //SHOULD always be true
+                        if(getOUT(&heap, &booted)){
+                            //now sned patient to hash, will do once implemented
+                            printf("Patient %d was assigned doctor (ID).\n", booted.id);
+                        }
                     }
                     else{
-                        printf("Doctor (ID) is now on standby");
+                        printf("Doctor (ID) is now on standby.\n");
                     }
                 }
                 else if(iChoice == 3){
