@@ -347,52 +347,52 @@ int main(void){
             }
             else{
                 if(iChoice == 1){
-                //entering a new user
+                    //entering a new user
 
-                //IDEA from EthpSTEIN and Jdiddy
-                //prompt user if they want to make a singular entry (1patient), or a file with multiple patients 
-                patient newpatient;
-                printf("Enter ID: ");
-                //if invalid ID is entered
-                if(scanf("%d", &newpatient.id) != 1){
-                    newpatient.id = -1;
-                    // Clear the bad input from the buffer
-                    int c;
-                    while ((c = getchar()) != '\n' && c != EOF) { }
-                }
-                printf("\nEnter Triage level: ");
-                //if invalid triage level is entered
-                if(scanf("%d", &newpatient.tl) != 1){
-                    newpatient.tl = -1;
-                    // Clear the bad input from the buffer
-                    int c;
-                    while ((c = getchar()) != '\n' && c != EOF) { }
-                }
-                //if any of the inputs were invalid, don't add it the the heap
-                if(newpatient.id == -1 || newpatient.tl == -1){
-                    printf("\nError in input, patient not added to queue.\n");
-                }
-                else{
-                    int nibibeenheforeu = findoldhead(&heap, newpatient.id);
-                    //if patient is already in waiting list, update position according to most recent status
-                    if(nibibeenheforeu != -1){
-                        updih(&heap, nibibeenheforeu, newpatient.id);
+                    //IDEA from EthpSTEIN and Jdiddy
+                    //prompt user if they want to make a singular entry (1patient), or a file with multiple patients 
+                    patient newpatient;
+                    printf("Enter ID: ");
+                    //if invalid ID is entered
+                    if(scanf("%d", &newpatient.id) != 1){
+                        newpatient.id = -1;
+                        // Clear the bad input from the buffer
+                        int c;
+                        while ((c = getchar()) != '\n' && c != EOF) { }
                     }
-                    addtoqueue(&heap, newpatient);
-                    //if there are doctors available (reminder to ADD IF STATEMENT HERE once hash is implemented)
-                    //{
-                    patient booted;
-                    //should always be true
-                    if(getOUT(&heap, &booted)){
-                        //now sned patient to hash, will do once implemented
-                        printf("\nPatient %d was assigned doctor (ID).\n", booted.id);
+                    printf("\nEnter Triage level: ");
+                    //if invalid triage level is entered
+                    if(scanf("%d", &newpatient.tl) != 1){
+                        newpatient.tl = -1;
+                        // Clear the bad input from the buffer
+                        int c;
+                        while ((c = getchar()) != '\n' && c != EOF) { }
                     }
+                    //if any of the inputs were invalid, don't add it the the heap
+                    if(newpatient.id == -1 || newpatient.tl == -1){
+                        printf("\nError in input, patient not added to queue.\n");
+                    }
+                    else{
+                        int nibibeenheforeu = findoldhead(&heap, newpatient.id);
+                        //if patient is already in waiting list, update position according to most recent status
+                        if(nibibeenheforeu != -1){
+                            updih(&heap, nibibeenheforeu, newpatient.id);
+                        }
+                        addtoqueue(&heap, newpatient);
+                        //if there are doctors available (reminder to ADD IF STATEMENT HERE once hash is implemented)
+                        //{
+                        patient booted;
+                        //should always be true
+                        if(getOUT(&heap, &booted)){
+                            //now sned patient to hash, will do once implemented
+                            printf("\nPatient %d was assigned doctor (ID).\n", booted.id);
+                        }
 
-                    //}
-                    //else
-                    printf("No doctors available, added to waiting list.\nPatient is number something in line.\n");
-                    //^^ maybe I can add some way to see position in line later
-                }
+                        //}
+                        //else
+                        printf("No doctors available, added to waiting list.\nPatient is number something in line.\n");
+                        //^^ maybe I can add some way to see position in line later
+                    }
                 
                 }
                 //if dischargin a patient
