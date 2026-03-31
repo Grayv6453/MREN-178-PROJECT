@@ -34,7 +34,7 @@ typedef struct {
     int bed_num;
 } bed;
 
-typedef struct {
+typedef struct doctor{
     int doctor_id;
     int patient_id;
     struct doctor* next; // for hash table chaining
