@@ -126,14 +126,37 @@ int getOUT(daheap* heap, patient* booty){
         printf("no patients to boot...\n");
         return 0;
     }
-    //id of the patient about to get deleted, the one at the very end
+    //store root as to be booted, make last item the new root
     *booty = heap->patients[0];
+    heap->patients[0] = heap->patients[heap->currentpatients - 1];
     heap->currentpatients--;
 
     //bubble down from root
     int filler = 0;
     heapify(heap, 0, &filler);
     return 1;
+}
+
+void display_waiting_list(daheap* heap) {
+    if (heap->currentpatients == 0) {
+        printf("No patients in the waiting list.\n");
+        return;
+    }
+
+    // Work on a copy so the real heap is untouched
+    daheap copy = *heap;
+
+    printf("Waiting list (priority order):\n");
+    printf("------------------------------------\n");
+    printf("Position\tID\tTriage Level\n");
+
+    int position = 1;
+    patient booty;
+    while (copy.currentpatients > 0) {
+        getOUT(&copy, &booty);
+        printf("%d\t\t%d\t%d\n", position, booty.id, booty.tl);
+        position++;
+    }
 }
 
 // Searches for a patient by ID. Returns their index if found, or -1 if not found.
@@ -210,20 +233,20 @@ bool q_enqueue(doc_queue* q, doctor* new_doc) {
 
 // Dequeues doctor from q and stores in pointer doc
 // Returns true if successful, else false
-bool q_dequeue(doc_queue* q, doctor* doc) {
+doctor *q_dequeue(doc_queue* q) {
     // If queue is full, return false
     if (q_is_empty(q)) {
         printf("Error: Doctor queue is empty\n");
-        return false;
+        return NULL;
     }
-    doc->doctor_id = q->arr[q->front]->doctor_id;
+    doctor* doc = q->arr[q->front]; // Grab the actual pointer
     q->front = (q->front + 1) % TOTAL_DOCTORS;
     q->count--;
     if (q_is_empty(q)) {
         q->front = -1;
         q->rear = -1;
     }
-    return true;
+    return doc;
 }
 
 int hash (int id, int table_size){
@@ -239,11 +262,15 @@ bool pat_table_insert(patient* pat_table, int size, patient* new_pat) {
     patient* head = &pat_table[index];
 
     if (head->id == -1) {
+        // No collision
         *head = *new_pat;
         head->next = NULL;
-    } else {
-        new_pat->next = head->next; 
-        head->next = new_pat; 
+    } else { 
+        // Collision. Move current head down and place new patient at head.
+        patient* moved = (patient*)malloc(sizeof(patient));
+        *moved = *head;
+        new_pat->next = moved;
+        *head = *new_pat;
     }
     return true;
 }
@@ -270,32 +297,40 @@ patient *pat_table_pop(patient* pat_table, int size, int patient_id) {
     int index = hash(patient_id, size);
     patient* current = &pat_table[index];
     patient* prev = NULL;
+
+    //find da patient
     while (current != NULL && current->id != patient_id) {
         prev = current;
         current = current->next;
     }
+    //not found
     if (current == NULL) return NULL;
+
+    // Create a safe copy of the patient to return to main
+    patient* PoppedPatty = (patient*)malloc(sizeof(patient));
+    *PoppedPatty = *current; 
+    PoppedPatty->next = NULL;
+
+    //patch hole in tha hashbrown
     if (prev == NULL) {
-        // If prev == NULL, we are at the head of chain.
+        //it's null so we are popping the head
         if (current->next == NULL) {
-            // current is the only node in the chain
-            patient* temp = (patient*) malloc(sizeof(patient));
-            temp->id = current->id;
-            temp->assigned_doc = current->assigned_doc;
-            temp->tl = current->tl;
-            temp->next = NULL;
-            current->id = -1; // Mark as empty
-            return temp;
+            //mark head as empty (airhead bruh)
+            current->id = -1;
         } else {
             // Move node after current up
-            patient* temp = current->next; // TODO: idk if this is correct
-            pat_table[index].id = temp->id;
-            pat_table[index].next = temp->next;
+            patient* temp = current->next; // TODO: idk if this is correct.    Nah u good homie
+            //copy all tha data
+            *current = *temp;
+            //free the node that was shifted up
+            free(temp);
         }
     } else {
+        //popping form teh middle of the chain
         prev->next = current->next;
+        free(current);
     }
-    return current;
+    return PoppedPatty;
 }
 
 patient* init_pat_table (int size) {
@@ -309,6 +344,21 @@ patient* init_pat_table (int size) {
         pat_table[i].next = NULL;
     }
     return pat_table;
+}
+
+void display_pat_table(patient* pat_table, int size) {
+    printf("Current patients being treated:\n");
+    printf("------------------------------------\n");
+    printf("ID\tTriage Level\tAssigned Doctor ID\n");
+    for (int i = 0; i < size; i++) {
+        patient* current = &pat_table[i];
+        // Go through the chain and print all nodes
+        while (current != NULL && current->id != -1) {
+            printf("%d\t%d\t\t%d\n", 
+                current->id, current->tl, current->assigned_doc->doctor_id);
+            current = current->next;
+        }
+    }
 }
 
 doctor *init_doctor(int doctor_id, int patient_id) {
@@ -359,7 +409,7 @@ int main(void){
             //     printf("%d is free\n", free_drs->arr[(free_drs->front+i) % TOTAL_DOCTORS]->doctor_id);
             // } // debugging
 
-            printf("Entering a new user (1), discharging patient (2), view waiting list (3), or quitting program (4) ?.\nEnter '1', '2', '3', or '4'\n");
+            printf("------------------------------------\nSelect an option:\n1. Enter new patient\n2. Discharge patient\n3. View waiting list\n4. View patients being treated\n5. Quit\n");
             if (scanf("%d", &iChoice) != 1) {
                 // If scanf didn't return 1, the input was invalid.
                 printf("Invalid input! Please enter a number.\n");
@@ -427,13 +477,22 @@ int main(void){
                                     patient booted;
                                     //should always be true
                                     if(getOUT(&heap, &booted)){
-                                        //now sned patient to hash, will do once implemented
-                                        doctor assigned_doc;
-                                        q_dequeue(free_drs, &assigned_doc);
-                                        assigned_doc.patient_id = booted.id;
-                                        booted.assigned_doc = &assigned_doc;
-                                        pat_table_insert(in_treatment, PAT_TBL_SIZE, &booted);
-                                        printf("\nPatient %d was assigned doctor %d.\n", booted.id, booted.assigned_doc->doctor_id);
+                                        //now sned patient to hash
+
+                                        //first get doctor pointer from queue, and set patient id to patient being from waiting list to hashbrown
+                                        doctor* DocPoi = q_dequeue(free_drs);
+                                        DocPoi->patient_id = booted.id;
+                                        
+                                        //then allocate memory in heap for a patient node to put in the hash table
+                                        patient* HeapPatty = (patient*)malloc(sizeof(patient));
+                                        *HeapPatty = booted; // Copy the data from patient being booted over to the heap copy of it
+                                        HeapPatty->assigned_doc = DocPoi;
+                                        HeapPatty->next = NULL;
+                                        
+                                        //now insert the heapversion of da patty into the table
+                                        pat_table_insert(in_treatment, PAT_TBL_SIZE, HeapPatty);
+
+                                        printf("\nPatient %d was assigned doctor %d.\n", HeapPatty->id, HeapPatty->assigned_doc->doctor_id);
                                     }
                                 }
                                 else {
@@ -474,18 +533,27 @@ int main(void){
                         patient booted;
                         //SHOULD always be true
                         if(getOUT(&heap, &booted) == 1){
-                            //now sned patient to hash, will do once implemented
-                            doctor *assigned_doc = (doctor*) malloc(sizeof(doctor));
-                            q_dequeue(free_drs, assigned_doc);
-                            assigned_doc->patient_id = booted.id;
-                            booted.assigned_doc = assigned_doc;
-                            pat_table_insert(in_treatment, PAT_TBL_SIZE, &booted);
-                            printf("\nPatient %d was assigned doctor %d.\n", booted.id, booted.assigned_doc->doctor_id);
+                            //now sned patient to hash, smae stff as in option 1
+                            //first get doctor pointer from queue, and set patient id to patient being from waiting list to hashbrown
+                            doctor* DocPoi = q_dequeue(free_drs);
+                            DocPoi->patient_id = booted.id;
+                            
+                            //then allocate memory in heap for a patient node to put in the hash table
+                            patient* HeapPatty = (patient*)malloc(sizeof(patient));
+                            *HeapPatty = booted; // Copy the data from patient being booted over to the heap copy of it
+                            HeapPatty->assigned_doc = DocPoi;
+                            HeapPatty->next = NULL;
+                            
+                            //now insert the heapversion of da patty into the table
+                            pat_table_insert(in_treatment, PAT_TBL_SIZE, HeapPatty);
+
+                            printf("\nPatient %d was assigned doctor %d.\n", HeapPatty->id, HeapPatty->assigned_doc->doctor_id);
                         }
                     }
                     else{
                         printf("Doctor %d is now on standby.\n", discharged->assigned_doc->doctor_id);
                     }
+                    free(discharged);
                 }
                 else if(iChoice == 3){
                     //viewing queue
@@ -494,19 +562,23 @@ int main(void){
                         printf("ID: %d\nTriage level: %d\n\n", heap.patients[i].id, heap.patients[i].tl);
                     }
                 }
-                else if(iChoice == 4){
+                else if(iChoice == 5){ // lol ik these arent in order but im too lazy to switch
                     //quitting
                     quit = 1;
                     //so can leave the input loop
                     iChoice = -1;
                     printf("Quitting... seeyuh\n");
                 }
+                else if (iChoice == 4) {
+                    //see who bein treated
+                    display_pat_table(in_treatment, PAT_TBL_SIZE);
+                }
                 else{
                 //error
                     printf("Error, try again.\n");
                 }
             }
-        }while (iChoice > 0 && iChoice < 5);
+        }while (iChoice > 0 && iChoice < 6);
     }   
     return 0;
 }
