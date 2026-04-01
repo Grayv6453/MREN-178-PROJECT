@@ -258,6 +258,8 @@ int hash (int id, int table_size){
     return id % table_size;
 }
 
+// Inserts new_pat into pat_table. Handles collisions via chaining. Returns
+// true if successful, else false.
 bool pat_table_insert(patient* pat_table, int size, patient* new_pat) {
     if (pat_table == NULL || new_pat == NULL) {
         return false; // Invalid input
@@ -280,6 +282,8 @@ bool pat_table_insert(patient* pat_table, int size, patient* new_pat) {
     return true;
 }
 
+// Searches for patient_id in pat_table. Returns pointer to patient if found, 
+// else NULL.
 patient* pat_table_search(patient* pat_table, int size, int patient_id) {
     if (pat_table == NULL) {
         return NULL; 
@@ -298,6 +302,8 @@ patient* pat_table_search(patient* pat_table, int size, int patient_id) {
     return NULL; 
 }
 
+// Removes patient with patient_id from pat_table and returns pointer to removed
+// patient. Returns NULL if patient not found.
 patient *pat_table_pop(patient* pat_table, int size, int patient_id) {
     int index = hash(patient_id, size);
     patient* current = &pat_table[index];
@@ -339,11 +345,11 @@ patient *pat_table_pop(patient* pat_table, int size, int patient_id) {
 }
 
 patient* init_pat_table (int size) {
-    
     patient* pat_table = (patient*)malloc(size * sizeof(patient));
     if (pat_table == NULL) {
         return NULL; 
     }
+
     for (int i = 0; i < size; i++) {
         pat_table[i].id = -1;
         pat_table[i].next = NULL;
