@@ -15,7 +15,7 @@
 #define TOTAL_CLANKERS 500
 #define DOC_TBL_SIZE 23
 
-//Max Heap Size my n
+//Max Heap Size (only so many people can be waiting in line)
 #define MHS 2000
 
 //might add temperature, heart rate, and other symptoms of being a league player
@@ -51,36 +51,35 @@ void heapbirth(daheap* heap){
     heap->currentpatients = 0;
 }
 
-void swapenis(patient* uno, patient* dos){
+void swapih(patient* uno, patient* dos){
     patient temp = *uno;
     *uno = *dos;
     *dos = temp;
 }
 
-//insert patient into queue, 
+//add patient to heap 
 void addtoqueue(daheap* heap, patient CurrPat){
-    //BETTER IDEA heap (priority queue)
     //if the heap is full (limit to how many people can be added to the waiting list)
     //only so many people can be in the waiting line
     if(heap->currentpatients >= MHS){
-        printf("step aside bub, too many neighbours in here\n");
+        printf("step aside bub, too many bums in here\n");
         return;
     }
 
     //add the new patient to the heap
-    int currentpeen = heap->currentpatients;
-    heap->patients[currentpeen] = CurrPat;
+    int fellas = heap->currentpatients;
+    heap->patients[fellas] = CurrPat;
     heap->currentpatients++;
 
     //do the sorting(saiyan) walk (compare with parent, swap if necessary)
-    int daddynumber = (currentpeen - 1)/2;
+    int daddynumber = (fellas - 1)/2;
 
-    while (currentpeen > 0 && (heap->patients[currentpeen]).tl > (heap->patients[daddynumber]).tl){
-        swapenis(&heap->patients[currentpeen], &heap->patients[daddynumber]);
+    while (fellas > 0 && (heap->patients[fellas]).tl > (heap->patients[daddynumber]).tl){
+        swapih(&heap->patients[fellas], &heap->patients[daddynumber]);
 
         //Move up da tree
-        currentpeen = daddynumber;
-        daddynumber = (currentpeen - 1)/2;
+        fellas = daddynumber;
+        daddynumber = (fellas - 1)/2;
     }
 }
 
@@ -102,7 +101,7 @@ void heapify(daheap* heap, int index) {
 
     // If the largest is not the current node, swap and continue heapifying
     if (largest != index) {
-        swapenis(&heap->patients[index], &heap->patients[largest]);
+        swapih(&heap->patients[index], &heap->patients[largest]);
         heapify(heap, largest);
     }
 }
@@ -134,7 +133,7 @@ int findoldhead(daheap* heap, int updatedIDih){
     }
     return -1; // Not in the system
 }
-
+//resort the heap function(heapify but if the item is in the middle of the heap)
 void updih(daheap* heap, int index, int newaidslevel) {
     int oldaidslevel = heap->patients[index].tl;
     
@@ -143,22 +142,22 @@ void updih(daheap* heap, int index, int newaidslevel) {
 
     // If their priority went up (they dying harder), bubble up
     if (newaidslevel > oldaidslevel) {
-        int currentpeen = index;
-        int daddynumber = (currentpeen - 1) / 2;
+        int fellas = index;
+        int daddynumber = (fellas - 1) / 2;
 
-        while (currentpeen > 0 && heap->patients[currentpeen].tl > heap->patients[daddynumber].tl) {
-            swapenis(&heap->patients[currentpeen], &heap->patients[daddynumber]);
-            currentpeen = daddynumber;
-            daddynumber = (currentpeen - 1) / 2;
+        while (fellas > 0 && heap->patients[fellas].tl > heap->patients[daddynumber].tl) {
+            swapih(&heap->patients[fellas], &heap->patients[daddynumber]);
+            fellas = daddynumber;
+            daddynumber = (fellas - 1) / 2;
         }
     } 
     // If their priority went down (they're somehow doing better?), bubble down
     else if (newaidslevel < oldaidslevel) {
-        int currentpeen = index;
+        int fellas = index;
         while (1) {
-            int largest = currentpeen;
-            int leftChild = 2 * currentpeen + 1;
-            int rightChild = 2 * currentpeen + 2;
+            int largest = fellas;
+            int leftChild = 2 * fellas + 1;
+            int rightChild = 2 * fellas + 2;
 
             // if left child is larger, set largest to left child
             if (leftChild < heap->currentpatients && heap->patients[leftChild].tl > heap->patients[largest].tl) {
@@ -170,10 +169,10 @@ void updih(daheap* heap, int index, int newaidslevel) {
             }
 
             // our parent is no longer the largest, swap em down with the current largest
-            if (largest != currentpeen) {
-                swapenis(&heap->patients[currentpeen], &heap->patients[largest]);
+            if (largest != fellas) {
+                swapih(&heap->patients[fellas], &heap->patients[largest]);
                 //now that position in array has changed, set it to where it got swapped to
-                currentpeen = largest;
+                fellas = largest;
             } else {
                 //it's in the right spot now, stop
                 break;
@@ -340,8 +339,7 @@ int main(void){
             else{
                 if(iChoice == 1){
                     //entering a new user
-
-                    //IDEA from EthpSTEIN and Jdiddy
+                    //Idea for later (prob won't implement)
                     //prompt user if they want to make a singular entry (1patient), or a file with multiple patients 
                     patient newpatient;
                     printf("Enter ID: ");
@@ -365,10 +363,12 @@ int main(void){
                         printf("\nError in input, patient not added to queue.\n");
                     }
                     else{
-                        int nibibeenheforeu = findoldhead(&heap, newpatient.id);
+                        //return position of dupe, if not found (it's a unique id) return -1
+                        int oldheadposi = findoldhead(&heap, newpatient.id);
                         //if patient is already in waiting list, update position according to most recent status
-                        if(nibibeenheforeu != -1){
-                            updih(&heap, nibibeenheforeu, newpatient.id);
+                        if(oldheadposi != -1){
+                            //update the queue using position of existing id
+                            updih(&heap, oldheadposi, newpatient.id);
                         }
                         addtoqueue(&heap, newpatient);
                         
@@ -421,7 +421,7 @@ int main(void){
                     quit = 1;
                     //so can leave the input loop
                     iChoice = -1;
-                    printf("Quitting... cya later ni!");
+                    printf("Quitting... seeyuh\n");
                 }
                 else{
                 //error
