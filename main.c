@@ -405,28 +405,40 @@ int main(void){
                             updih(&heap, oldheadposi, newpatient.tl, &finalposi);
                             printf("Patient position updated, now position %d in line\n", finalposi);
                         }
-                        //it's new
+                        //okay the id isn't in the waiting list, but is it already in the hash (being treated)?
                         else{
-                            addtoqueue(&heap, newpatient, &finalposi);
-                            //if there are doctors available (reminder to ADD IF STATEMENT HERE once hash is implemented)
-                            // Check if there are free doctors available
-                            if (!q_is_empty(free_drs)) {
-                                patient booted;
-                                //should always be true
-                                if(getOUT(&heap, &booted)){
-                                    //now sned patient to hash, will do once implemented
-                                    doctor assigned_doc;
-                                    q_dequeue(free_drs, &assigned_doc);
-                                    assigned_doc.patient_id = booted.id;
-                                    booted.assigned_doc = &assigned_doc;
-                                    pat_table_insert(in_treatment, PAT_TBL_SIZE, &booted);
-                                    printf("\nPatient %d was assigned doctor %d.\n", booted.id, booted.assigned_doc->doctor_id);
+                            // 2. Check the treatment room (hash table)
+                            patient* already_treating = pat_table_search(in_treatment, PAT_TBL_SIZE, newpatient.id);
+    
+                            if (already_treating != NULL) {
+                                // THEY ARE IN A BED
+                                printf("Hold up! Patient %d is currently being treated by Doctor %d. Cannot add to waiting list.\n", 
+                                    already_treating->id, already_treating->assigned_doc->doctor_id);
+                            }
+                            //ok it really IS a new patient
+                            else{
+                                //add it to the waiting list
+                                addtoqueue(&heap, newpatient, &finalposi);
+                                //if there are doctors available (reminder to ADD IF STATEMENT HERE once hash is implemented)
+                                // Check if there are free doctors available
+                                if (!q_is_empty(free_drs)) {
+                                    patient booted;
+                                    //should always be true
+                                    if(getOUT(&heap, &booted)){
+                                        //now sned patient to hash, will do once implemented
+                                        doctor assigned_doc;
+                                        q_dequeue(free_drs, &assigned_doc);
+                                        assigned_doc.patient_id = booted.id;
+                                        booted.assigned_doc = &assigned_doc;
+                                        pat_table_insert(in_treatment, PAT_TBL_SIZE, &booted);
+                                        printf("\nPatient %d was assigned doctor %d.\n", booted.id, booted.assigned_doc->doctor_id);
+                                    }
                                 }
+                                else {
+                                    printf("No doctors available, added to waiting list.\nPatient is number %d in line.\n", finalposi);
+                                }
+                                //^^ maybe I can add some way to see position in line later
                             }
-                            else {
-                                printf("No doctors available, added to waiting list.\nPatient is number %d in line.\n", finalposi);
-                            }
-                            //^^ maybe I can add some way to see position in line later
                         }
                     }
                 
