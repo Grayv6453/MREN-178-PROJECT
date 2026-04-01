@@ -404,6 +404,7 @@ int main(void){
 
     patient* in_treatment = init_pat_table(PAT_TBL_SIZE);
 
+    printf("\n====== HOSPITAL RESOURCE MANAGER ======\nThis program allows you to add patients to a hospital, automatically assign doctors, and arrange waiting patients in terms of triage severity.\n");
     //lowkey forgot that this program should keep running until
     //user is done with it 
     int quit = 0;
