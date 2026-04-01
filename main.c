@@ -326,6 +326,22 @@ patient* init_pat_table (int size) {
     return pat_table;
 }
 
+void display_pat_table(patient* pat_table, int size) {
+    printf("Current patients being treated:\n");
+    printf("----------------------------------\n");
+    printf("ID\tTriage Level\tAssigned Doctor ID\n");
+    for (int i = 0; i < size; i++) {
+        patient* current = &pat_table[i];
+        // Go through the chain and print all nodes
+        while (current != NULL && current->id != -1) {
+            printf("%d\t%d\t\t%d\n", 
+                current->id, current->tl, current->assigned_doc->doctor_id);
+            current = current->next;
+        }
+    }
+    printf("----------------------------------\n");
+}
+
 doctor *init_doctor(int doctor_id, int patient_id) {
     doctor* new_doc = (doctor*)malloc(sizeof(doctor));
     if (new_doc == NULL) {
@@ -374,7 +390,7 @@ int main(void){
             //     printf("%d is free\n", free_drs->arr[(free_drs->front+i) % TOTAL_DOCTORS]->doctor_id);
             // } // debugging
 
-            printf("Entering a new user (1), discharging patient (2), view waiting list (3), or quitting program (4) ?.\nEnter '1', '2', '3', or '4'\n");
+            printf("------------------------------------\nSelect an option:\n1. Enter new patient\n2. Discharge patient\n3. View waiting list\n4. View patients being treated\n5. Quit\n");
             if (scanf("%d", &iChoice) != 1) {
                 // If scanf didn't return 1, the input was invalid.
                 printf("Invalid input! Please enter a number.\n");
@@ -527,19 +543,23 @@ int main(void){
                         printf("ID: %d\nTriage level: %d\n\n", heap.patients[i].id, heap.patients[i].tl);
                     }
                 }
-                else if(iChoice == 4){
+                else if(iChoice == 5){ // lol ik these arent in order but im too lazy to switch
                     //quitting
                     quit = 1;
                     //so can leave the input loop
                     iChoice = -1;
                     printf("Quitting... seeyuh\n");
                 }
+                else if (iChoice == 4) {
+                    //see who bein treated
+                    display_pat_table(in_treatment, PAT_TBL_SIZE);
+                }
                 else{
                 //error
                     printf("Error, try again.\n");
                 }
             }
-        }while (iChoice > 0 && iChoice < 5);
+        }while (iChoice > 0 && iChoice < 6);
     }   
     return 0;
 }
