@@ -220,6 +220,7 @@ doc_queue* init_doc_queue() {
     return q;
 }
 
+// Enqueues a doctor into queue q. Returns true if successful, else false.
 bool q_enqueue(doc_queue* q, doctor* new_doc) {
     if (q_is_full(q)) {
         // Should never be possible for there to be more drs than total drs,
@@ -236,10 +237,9 @@ bool q_enqueue(doc_queue* q, doctor* new_doc) {
     return true;
 }
 
-// Dequeues doctor from q and stores in pointer doc
-// Returns true if successful, else false
+// Dequeues a doctor from queue q. Returns pointer to doctor if successful, 
+// else NULL.
 doctor *q_dequeue(doc_queue* q) {
-    // If queue is full, return false
     if (q_is_empty(q)) {
         printf("Error: Doctor queue is empty\n");
         return NULL;
@@ -254,6 +254,7 @@ doctor *q_dequeue(doc_queue* q) {
     return doc;
 }
 
+// Simple division hash function. Ensure table_size is prime to reduce collisions.
 int hash (int id, int table_size){
     return id % table_size;
 }
