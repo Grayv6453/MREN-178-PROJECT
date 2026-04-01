@@ -137,6 +137,7 @@ int getOUT(daheap* heap, patient* booty){
     return 1;
 }
 
+//Heap sort!!!!
 void showmedasauce(daheap* heap) {
     if (heap->currentpatients == 0) {
         printf("No patients in the waiting list.\n");
@@ -149,11 +150,15 @@ void showmedasauce(daheap* heap) {
     printf("Waiting list (priority order):\n");
     printf("------------------------------------\n");
     printf("Position\tID\tTriage Level\n");
-
+    //counter to go through the copy heap
     int posi = 1;
+    //gonna store the booty from each call of getOUT here
     patient booty;
+    //loop through heap for amount of patients
     while (copy.currentpatients > 0) {
+        //get OUT function removes root from heap, and stores it in the booty
         getOUT(&copy, &booty);
+        //print with the booty and current posi
         printf("%d\t\t%d\t%d\n", posi, booty.id, booty.tl);
         posi++;
     }
