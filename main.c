@@ -514,6 +514,10 @@ int main(void){
                         int c;
                         while ((c = getchar()) != '\n' && c != EOF) { }
                     }
+                    if (pat_id < 0) {
+                        printf("Invalid patient ID entered.\n");
+                        continue;
+                    }
                     patient *discharged = pat_table_pop(in_treatment, PAT_TBL_SIZE, pat_id);
                     if (discharged == NULL) {
                         printf("Error: No patient with ID %d currently being treated.\n", pat_id);
