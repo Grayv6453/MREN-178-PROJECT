@@ -11,7 +11,7 @@
 
 //max resource the hospital can distribute
 #define MAX_BEDS 1000
-#define TOTAL_DOCTORS 2
+#define TOTAL_DOCTORS 100
 #define TOTAL_CLANKERS 500
 #define PAT_TBL_SIZE 23
 
@@ -385,6 +385,10 @@ int main(void){
         
         int iChoice = -1;
         do {
+            // for (int i = 0; i < free_drs->count; i++) {
+            //     printf("%d is free\n", free_drs->arr[(free_drs->front+i) % TOTAL_DOCTORS]->doctor_id);
+            // } // debugging
+
             printf("Entering a new user (1), discharging patient (2), view waiting list (3), or quitting program (4) ?.\nEnter '1', '2', '3', or '4'\n");
             if (scanf("%d", &iChoice) != 1) {
                 // If scanf didn't return 1, the input was invalid.
@@ -440,10 +444,10 @@ int main(void){
                             //should always be true
                             if(getOUT(&heap, &booted)){
                                 //now sned patient to hash, will do once implemented
-                                doctor assigned_doc;
-                                q_dequeue(free_drs, &assigned_doc);
-                                assigned_doc.patient_id = booted.id;
-                                booted.assigned_doc = &assigned_doc;
+                                doctor *assigned_doc = (doctor*) malloc(sizeof(doctor));
+                                q_dequeue(free_drs, assigned_doc);
+                                assigned_doc->patient_id = booted.id;
+                                booted.assigned_doc = assigned_doc;
                                 pat_table_insert(in_treatment, PAT_TBL_SIZE, &booted);
                                 printf("\nPatient %d was assigned doctor %d.\n", booted.id, booted.assigned_doc->doctor_id);
                             }
@@ -471,6 +475,8 @@ int main(void){
                         continue;
                     }
 
+                    printf("doctor id: %d\n", discharged->assigned_doc->doctor_id);
+
                     q_enqueue(free_drs, discharged->assigned_doc);
 
                     //dishcharge them, maybe doctor enters their id and patients id
@@ -483,10 +489,10 @@ int main(void){
                         //SHOULD always be true
                         if(getOUT(&heap, &booted)){
                             //now sned patient to hash, will do once implemented
-                            doctor assigned_doc;
-                            q_dequeue(free_drs, &assigned_doc);
-                            assigned_doc.patient_id = booted.id;
-                            booted.assigned_doc = &assigned_doc;
+                            doctor *assigned_doc = (doctor*) malloc(sizeof(doctor));
+                            q_dequeue(free_drs, assigned_doc);
+                            assigned_doc->patient_id = booted.id;
+                            booted.assigned_doc = assigned_doc;
                             pat_table_insert(in_treatment, PAT_TBL_SIZE, &booted);
                             printf("\nPatient %d was assigned doctor %d.\n", booted.id, booted.assigned_doc->doctor_id);
                         }
