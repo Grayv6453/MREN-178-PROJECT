@@ -444,7 +444,7 @@ int main(void){
                         while ((c = getchar()) != '\n' && c != EOF) { }
                     }
                     //if any of the inputs were invalid, don't add it the the heap
-                    if(newpatient.id == -1 || newpatient.tl == -1){
+                    if(newpatient.id < 0 || newpatient.tl < 0){
                         printf("\nError in input, patient not added to queue.\n");
                     }
                     else{
