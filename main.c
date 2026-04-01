@@ -230,8 +230,7 @@ doctor *q_dequeue(doc_queue* q) {
 }
 
 int hash (int id, int table_size){
-    // return id % table_size;
-    return 0;
+    return id % table_size;
 }
 
 bool pat_table_insert(patient* pat_table, int size, patient* new_pat) {
