@@ -11,7 +11,7 @@
 
 //max resource the hospital can distribute
 #define MAX_BEDS 1000
-#define TOTAL_DOCTORS 100
+#define TOTAL_DOCTORS 2
 #define TOTAL_CLANKERS 500
 #define PAT_TBL_SIZE 23
 
@@ -328,7 +328,7 @@ patient* init_pat_table (int size) {
 
 void display_pat_table(patient* pat_table, int size) {
     printf("Current patients being treated:\n");
-    printf("----------------------------------\n");
+    printf("------------------------------------\n");
     printf("ID\tTriage Level\tAssigned Doctor ID\n");
     for (int i = 0; i < size; i++) {
         patient* current = &pat_table[i];
@@ -339,7 +339,6 @@ void display_pat_table(patient* pat_table, int size) {
             current = current->next;
         }
     }
-    printf("----------------------------------\n");
 }
 
 doctor *init_doctor(int doctor_id, int patient_id) {
