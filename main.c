@@ -128,8 +128,9 @@ int getOUT(daheap* heap, patient* booty){
         printf("no patients to boot...\n");
         return 0;
     }
-    //id of the patient about to get deleted, the one at the very end
+    //store root as to be booted, make last item the new root
     *booty = heap->patients[0];
+    heap->patients[0] = heap->patients[heap->currentpatients - 1];
     heap->currentpatients--;
 
     //bubble down from root
