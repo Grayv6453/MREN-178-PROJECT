@@ -10,7 +10,7 @@
 //Starting at root, remove patient from heap and assign doctor in hash table
 
 //max resource the hospital can distribute
-#define TOTAL_DOCTORS 100
+#define TOTAL_DOCTORS 2
 #define PAT_TBL_SIZE 23
 
 //Max Heap Size (only so many people can be waiting in line)
@@ -137,25 +137,25 @@ int getOUT(daheap* heap, patient* booty){
     return 1;
 }
 
-void display_waiting_list(daheap* heap) {
+void showmedasauce(daheap* heap) {
     if (heap->currentpatients == 0) {
         printf("No patients in the waiting list.\n");
         return;
     }
 
-    // Work on a copy so the real heap is untouched
+    // making a clean copy so that the OG is untouched (lebroooonnn jaaaaamessss)
     daheap copy = *heap;
 
     printf("Waiting list (priority order):\n");
     printf("------------------------------------\n");
     printf("Position\tID\tTriage Level\n");
 
-    int position = 1;
+    int posi = 1;
     patient booty;
     while (copy.currentpatients > 0) {
         getOUT(&copy, &booty);
-        printf("%d\t\t%d\t%d\n", position, booty.id, booty.tl);
-        position++;
+        printf("%d\t\t%d\t%d\n", posi, booty.id, booty.tl);
+        posi++;
     }
 }
 
@@ -496,7 +496,7 @@ int main(void){
                                     }
                                 }
                                 else {
-                                    printf("No doctors available, added to waiting list.\nPatient is number %d in line.\n", finalposi);
+                                    printf("No doctors available, added to waiting list.\n");
                                 }
                                 //^^ maybe I can add some way to see position in line later
                             }
@@ -557,10 +557,7 @@ int main(void){
                 }
                 else if(iChoice == 3){
                     //viewing queue
-                    
-                    for(int i = 0; i < heap.currentpatients; i++){
-                        printf("ID: %d\nTriage level: %d\n\n", heap.patients[i].id, heap.patients[i].tl);
-                    }
+                    showmedasauce(&heap);
                 }
                 else if(iChoice == 5){ // lol ik these arent in order but im too lazy to switch
                     //quitting
