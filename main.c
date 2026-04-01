@@ -80,7 +80,7 @@ void heapify(daheap* heap, int index, int *finalposi) {
         heapify(heap, largest, finalposi);
     }
     else{
-        *finalposi = largest;
+        *finalposi = largest + 1;
     }
 }
 
@@ -98,7 +98,7 @@ void shutthebubbleup(daheap* heap, int index, int *finalposi) {
         daddynumber = (index - 1) / 2;
     }
 
-    *finalposi = index;
+    *finalposi = index + 1;
 }
 
 //add patient to heap 
@@ -165,7 +165,7 @@ void updih(daheap* heap, int index, int newaidslevel, int *finalposi) {
     }
     //if priority didn't change (shouldn't be possible to reach this funciton then, but jsut in case)
     else{
-        *finalposi = index;
+        *finalposi = index + 1;
     }
 }
 
