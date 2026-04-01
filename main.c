@@ -10,9 +10,7 @@
 //Starting at root, remove patient from heap and assign doctor in hash table
 
 //max resource the hospital can distribute
-#define MAX_BEDS 1000
 #define TOTAL_DOCTORS 100
-#define TOTAL_CLANKERS 500
 #define PAT_TBL_SIZE 23
 
 //Max Heap Size (only so many people can be waiting in line)
