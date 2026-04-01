@@ -27,6 +27,7 @@ typedef struct {
     doctor* arr[TOTAL_DOCTORS];
     int front;
     int rear;
+    int count;
 } doc_queue;
 
 //might add temperature, heart rate, and other symptoms of being a league player
@@ -193,11 +194,11 @@ void updih(daheap* heap, int index, int newaidslevel) {
 }
 
 bool q_is_full(doc_queue* q) {
-    return (q->rear + 1) % TOTAL_DOCTORS == q->front;
+    return q->count >= TOTAL_DOCTORS;
 }
 
 bool q_is_empty(doc_queue* q) {
-    return q->front == -1;
+    return q->count == 0;
 }
 
 // Initialize a queue containing doctors with max size of TOTAL_DOCTORS.
@@ -208,6 +209,7 @@ doc_queue* init_doc_queue() {
     }
     q->front = -1;
     q->rear = -1;
+    q->count = 0;
     for (int i = 0; i < TOTAL_DOCTORS; i++) {
         q->arr[i] = NULL;
     }
@@ -223,6 +225,7 @@ bool q_enqueue(doc_queue* q, doctor* new_doc) {
     }
     q->rear = (++q->rear) % TOTAL_DOCTORS;
     q->arr[q->rear] = new_doc;
+    q->count++;
     if (q->front == -1) {
         q->front = 0;
     }
@@ -239,6 +242,7 @@ bool q_dequeue(doc_queue* q, doctor* doc) {
     }
     doc->doctor_id = q->arr[q->front]->doctor_id;
     q->front = (q->front + 1) % TOTAL_DOCTORS;
+    q->count--;
     if (q_is_empty(q)) {
         q->front = -1;
         q->rear = -1;
@@ -299,7 +303,6 @@ patient *pat_table_pop(patient* pat_table, int size, int patient_id) {
         // If prev == NULL, we are at the head of chain.
         if (current->next == NULL) {
             // current is the only node in the chain
-            current->id = -1; // mark patient as empty
             current->next = NULL;
         } else {
             // Move node after current up
@@ -362,11 +365,6 @@ int main(void){
     }
 
     patient* in_treatment = init_pat_table(PAT_TBL_SIZE);
-
-    for (int i = 0; i < TOTAL_DOCTORS; i++) {
-        printf("Doctor %d is free\n", free_drs->arr[i]->doctor_id);
-    }
-
 
     //lowkey forgot that this program should keep running until
     //user is done with (quit function)
@@ -441,7 +439,7 @@ int main(void){
                                 assigned_doc.patient_id = booted.id;
                                 booted.assigned_doc = &assigned_doc;
                                 pat_table_insert(in_treatment, PAT_TBL_SIZE, &booted);
-                                printf("\nPatient %d was assigned doctor %d.\n", booted.id, assigned_doc.doctor_id);
+                                printf("\nPatient %d was assigned doctor %d.\n", booted.id, booted.assigned_doc->doctor_id);
                             }
                         }
                         else {
@@ -470,7 +468,7 @@ int main(void){
                     q_enqueue(free_drs, discharged->assigned_doc);
 
                     //dishcharge them, maybe doctor enters their id and patients id
-                    printf("Doctor %d has discharded patient %d\n", discharged->assigned_doc->doctor_id, pat_id);
+                    printf("Doctor %d has discharded patient %d\n", discharged->assigned_doc->doctor_id, discharged->id);
                     free(discharged);
                     //now check if there is a patient waiting to be treated
                     //-1 is an invalid id
