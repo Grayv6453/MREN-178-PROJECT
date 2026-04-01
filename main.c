@@ -15,7 +15,7 @@
 #define TOTAL_CLANKERS 500
 #define PAT_TBL_SIZE 23
 
-//Max Heap Size my n
+//Max Heap Size (only so many people can be waiting in line)
 #define MHS 2000
 
 typedef struct doctor{
@@ -53,47 +53,22 @@ void heapbirth(daheap* heap){
     heap->currentpatients = 0;
 }
 
-void swapenis(patient* uno, patient* dos){
+void swapih(patient* uno, patient* dos){
     patient temp = *uno;
     *uno = *dos;
     *dos = temp;
 }
 
-//insert patient into queue, 
-void addtoqueue(daheap* heap, patient CurrPat){
-    //BETTER IDEA heap (priority queue)
-    //if the heap is full (limit to how many people can be added to the waiting list)
-    //only so many people can be in the waiting line
-    if(heap->currentpatients >= MHS){
-        printf("step aside bub, too many neighbours in here\n");
-        return;
-    }
 
-    //add the new patient to the heap
-    int currentpeen = heap->currentpatients;
-    heap->patients[currentpeen] = CurrPat;
-    heap->currentpatients++;
-
-    //do the sorting(saiyan) walk (compare with parent, swap if necessary)
-    int daddynumber = (currentpeen - 1)/2;
-
-    while (currentpeen > 0 && (heap->patients[currentpeen]).tl > (heap->patients[daddynumber]).tl){
-        swapenis(&heap->patients[currentpeen], &heap->patients[daddynumber]);
-
-        //Move up da tree
-        currentpeen = daddynumber;
-        daddynumber = (currentpeen - 1)/2;
-    }
-}
 
 // The bubble-down process
-void heapify(daheap* heap, int index) {
+void heapify(daheap* heap, int index, int *finalposi) {
     int largest = index;
     int leftChild = 2 * index + 1;
     int rightChild = 2 * index + 2;
 
     // Check if the left child exists and is greater than the current node
-    if (leftChild < heap->patients[leftChild].tl && heap->patients[leftChild].tl > heap->patients[largest].tl) {
+    if (leftChild < heap->currentpatients && heap->patients[leftChild].tl > heap->patients[largest].tl){
         largest = leftChild;
     }
 
@@ -101,15 +76,53 @@ void heapify(daheap* heap, int index) {
     if (rightChild < heap->currentpatients && heap->patients[rightChild].tl > heap->patients[largest].tl) {
         largest = rightChild;
     }
-
     // If the largest is not the current node, swap and continue heapifying
     if (largest != index) {
-        swapenis(&heap->patients[index], &heap->patients[largest]);
-        heapify(heap, largest);
+        swapih(&heap->patients[index], &heap->patients[largest]);
+        heapify(heap, largest, finalposi);
+    }
+    else{
+        *finalposi = largest + 1;
     }
 }
 
+// bubble up process used in the update function "updih"
+//takes heap and position of the item being updated
+void shutthebubbleup(daheap* heap, int index, int *finalposi) {
+    int daddynumber = (index - 1) / 2;
+
+    // While not at root, and current node is greater than its parent
+    while (index > 0 && heap->patients[index].tl > heap->patients[daddynumber].tl) {
+        swapih(&heap->patients[index], &heap->patients[daddynumber]);
+        
+        // Move up
+        index = daddynumber;
+        daddynumber = (index - 1) / 2;
+    }
+
+    *finalposi = index + 1;
+}
+
+//add patient to heap 
+void addtoqueue(daheap* heap, patient CurrPat, int *finalposi){
+    //if the heap is full (limit to how many people can be added to the waiting list)
+    //only so many people can be in the waiting line
+    if(heap->currentpatients >= MHS){
+        printf("step aside bub, too many bums in here\n");
+        return;
+    }
+
+    //add the new patient to the heap
+    int fellas = heap->currentpatients;
+    heap->patients[fellas] = CurrPat;
+    heap->currentpatients++;
+
+    shutthebubbleup(heap, fellas, finalposi);
+}
+
 //removing from heap, deletes from root
+// returns 1 if it deletes, -1 if fails
+//updates the patient booty to be the patient removed from the heap
 int getOUT(daheap* heap, patient* booty){
     if(heap->currentpatients <= 0){
         printf("no patients to boot...\n");
@@ -119,21 +132,12 @@ int getOUT(daheap* heap, patient* booty){
     *booty = heap->patients[0];
     heap->currentpatients--;
 
-    //bubble down
-    heapify(heap, 0);
+    //bubble down from root
+    int filler = 0;
+    heapify(heap, 0, &filler);
     return 1;
 }
 
-void showmedasauce(daheap* heap){
-    //display the current queue
-    for(int i = 0; i< heap->currentpatients; i++){
-        printf("\nID: %d\ntriage level: %d\n", heap->patients[i].id, heap->patients[i].tl);
-    }
-
-    //maybe display the waiting times for different triage ranges/levels as well?
-}
-
-//hold on, I forgot to implement how to update an existing patient record gimme a sec
 // Searches for a patient by ID. Returns their index if found, or -1 if not found.
 int findoldhead(daheap* heap, int updatedIDih){
     for (int i = 0; i < heap->currentpatients; i++) {
@@ -145,7 +149,8 @@ int findoldhead(daheap* heap, int updatedIDih){
     return -1; // Not in the system
 }
 
-void updih(daheap* heap, int index, int newaidslevel) {
+//resort the heap function(heapify but if the item is in the middle of the heap)
+void updih(daheap* heap, int index, int newaidslevel, int *finalposi) {
     int oldaidslevel = heap->patients[index].tl;
     
     // Update the values
@@ -153,44 +158,17 @@ void updih(daheap* heap, int index, int newaidslevel) {
 
     // If their priority went up (they dying harder), bubble up
     if (newaidslevel > oldaidslevel) {
-        int currentpeen = index;
-        int daddynumber = (currentpeen - 1) / 2;
-
-        while (currentpeen > 0 && heap->patients[currentpeen].tl > heap->patients[daddynumber].tl) {
-            swapenis(&heap->patients[currentpeen], &heap->patients[daddynumber]);
-            currentpeen = daddynumber;
-            daddynumber = (currentpeen - 1) / 2;
-        }
+        shutthebubbleup(heap, index, finalposi);
     } 
     // If their priority went down (they're somehow doing better?), bubble down
     else if (newaidslevel < oldaidslevel) {
-        int currentpeen = index;
-        while (1) {
-            int largest = currentpeen;
-            int leftChild = 2 * currentpeen + 1;
-            int rightChild = 2 * currentpeen + 2;
-
-            // if left child is larger, set largest to left child
-            if (leftChild < heap->currentpatients && heap->patients[leftChild].tl > heap->patients[largest].tl) {
-                largest = leftChild;
-            }
-            // if right child is larger, set largest to right child
-            if (rightChild < heap->currentpatients && heap->patients[rightChild].tl > heap->patients[largest].tl) {
-                largest = rightChild;
-            }
-
-            // our parent is no longer the largest, swap em down with the current largest
-            if (largest != currentpeen) {
-                swapenis(&heap->patients[currentpeen], &heap->patients[largest]);
-                //now that position in array has changed, set it to where it got swapped to
-                currentpeen = largest;
-            } else {
-                //it's in the right spot now, stop
-                break;
-            }
-        }
+        
+        heapify(heap, index, finalposi);
     }
-    printf("Patient's position in queue updated, now in position (position).\n");
+    //if priority didn't change (shouldn't be possible to reach this funciton then, but jsut in case)
+    else{
+        *finalposi = index + 1;
+    }
 }
 
 bool q_is_full(doc_queue* q) {
@@ -347,13 +325,7 @@ doctor *init_doctor(int doctor_id, int patient_id) {
 }
 
 int main(void){
-    for(int i = 0; i<5; i++){
-        printf("gg\n");
-    }
-
-    printf("nhjgg\n");
-
-    //create the heap and shit
+    //create the heap type stuff
     daheap heap;
     heapbirth(&heap);
 
@@ -373,15 +345,15 @@ int main(void){
     patient* in_treatment = init_pat_table(PAT_TBL_SIZE);
 
     //lowkey forgot that this program should keep running until
-    //user is done with (quit function)
+    //user is done with it 
     int quit = 0;
     while(quit == 0){
 
         // get the patient information from a seperate file
         // each one makes a node, and is added to the queue.
 
-        //maybe when a user runs the code, they choose between 
-        //entering a new user, or seeing the current queue
+        //when a user runs the code, they choose between 
+        //entering a new user, discharging, viewing list, or quitting
         
         int iChoice = -1;
         do {
@@ -394,7 +366,6 @@ int main(void){
                 // If scanf didn't return 1, the input was invalid.
                 printf("Invalid input! Please enter a number.\n");
 
-                //NOTE to TA: I had to google how to clear the bad input from the buffer
                 // Clear the bad input from the buffer
                 int c;
                 while ((c = getchar()) != '\n' && c != EOF) { }
@@ -405,8 +376,7 @@ int main(void){
             else{
                 if(iChoice == 1){
                     //entering a new user
-
-                    //IDEA from EthpSTEIN and Jdiddy
+                    //Idea for later (prob won't implement)
                     //prompt user if they want to make a singular entry (1patient), or a file with multiple patients 
                     patient newpatient;
                     printf("Enter ID: ");
@@ -430,32 +400,38 @@ int main(void){
                         printf("\nError in input, patient not added to queue.\n");
                     }
                     else{
-                        int nibibeenheforeu = findoldhead(&heap, newpatient.id);
+                        int finalposi = 0;
+                        //return position of dupe, if not found (it's a unique id) return -1
+                        int oldheadposi = findoldhead(&heap, newpatient.id);
                         //if patient is already in waiting list, update position according to most recent status
-                        if(nibibeenheforeu != -1){
-                            updih(&heap, nibibeenheforeu, newpatient.id);
+                        if(oldheadposi != -1){
+                            //update the queue using position of existing id
+                            updih(&heap, oldheadposi, newpatient.tl, &finalposi);
+                            printf("Patient position updated, now position %d in line\n", finalposi);
                         }
-                        addtoqueue(&heap, newpatient);
-                        //if there are doctors available (reminder to ADD IF STATEMENT HERE once hash is implemented)
-                        //{
-                        // Check if there are free doctors available
-                        if (!q_is_empty(free_drs)) {
-                            patient booted;
-                            //should always be true
-                            if(getOUT(&heap, &booted)){
-                                //now sned patient to hash, will do once implemented
-                                doctor *assigned_doc = (doctor*) malloc(sizeof(doctor));
-                                q_dequeue(free_drs, assigned_doc);
-                                assigned_doc->patient_id = booted.id;
-                                booted.assigned_doc = assigned_doc;
-                                pat_table_insert(in_treatment, PAT_TBL_SIZE, &booted);
-                                printf("\nPatient %d was assigned doctor %d.\n", booted.id, booted.assigned_doc->doctor_id);
+                        //it's new
+                        else{
+                            addtoqueue(&heap, newpatient, &finalposi);
+                            //if there are doctors available (reminder to ADD IF STATEMENT HERE once hash is implemented)
+                            // Check if there are free doctors available
+                            if (!q_is_empty(free_drs)) {
+                                patient booted;
+                                //should always be true
+                                if(getOUT(&heap, &booted)){
+                                    //now sned patient to hash, will do once implemented
+                                    doctor assigned_doc;
+                                    q_dequeue(free_drs, &assigned_doc);
+                                    assigned_doc.patient_id = booted.id;
+                                    booted.assigned_doc = &assigned_doc;
+                                    pat_table_insert(in_treatment, PAT_TBL_SIZE, &booted);
+                                    printf("\nPatient %d was assigned doctor %d.\n", booted.id, booted.assigned_doc->doctor_id);
+                                }
                             }
+                            else {
+                                printf("No doctors available, added to waiting list.\nPatient is number %d in line.\n", finalposi);
+                            }
+                            //^^ maybe I can add some way to see position in line later
                         }
-                        else {
-                            printf("No doctors available, added to waiting list.\nPatient is number something in line.\n");
-                        }
-                        //^^ maybe I can add some way to see position in line later
                     }
                 
                 }
@@ -484,10 +460,10 @@ int main(void){
 
                     //now check if there is a patient waiting to be treated
                     //-1 is an invalid id
-                    if(heap.patients[0].id != -1){
+                    if(heap.currentpatients > 0){
                         patient booted;
                         //SHOULD always be true
-                        if(getOUT(&heap, &booted)){
+                        if(getOUT(&heap, &booted) == 1){
                             //now sned patient to hash, will do once implemented
                             doctor *assigned_doc = (doctor*) malloc(sizeof(doctor));
                             q_dequeue(free_drs, assigned_doc);
@@ -503,14 +479,17 @@ int main(void){
                 }
                 else if(iChoice == 3){
                     //viewing queue
-                    showmedasauce(&heap);
+                    
+                    for(int i = 0; i < heap.currentpatients; i++){
+                        printf("ID: %d\nTriage level: %d\n\n", heap.patients[i].id, heap.patients[i].tl);
+                    }
                 }
                 else if(iChoice == 4){
                     //quitting
                     quit = 1;
                     //so can leave the input loop
                     iChoice = -1;
-                    printf("Quitting... cya later ni!");
+                    printf("Quitting... seeyuh\n");
                 }
                 else{
                 //error
