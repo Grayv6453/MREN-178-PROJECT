@@ -229,7 +229,8 @@ doctor *q_dequeue(doc_queue* q) {
 }
 
 int hash (int id, int table_size){
-    return id % table_size;
+    // return id % table_size;
+    return 0;
 }
 
 bool pat_table_insert(patient* pat_table, int size, patient* new_pat) {
@@ -241,11 +242,15 @@ bool pat_table_insert(patient* pat_table, int size, patient* new_pat) {
     patient* head = &pat_table[index];
 
     if (head->id == -1) {
+        // No collision
         *head = *new_pat;
         head->next = NULL;
-    } else {
-        new_pat->next = head->next; 
-        head->next = new_pat; 
+    } else { 
+        // Collision. Move current head down and place new patient at head.
+        patient* moved = (patient*)malloc(sizeof(patient));
+        *moved = *head;
+        new_pat->next = moved;
+        *head = *new_pat;
     }
     return true;
 }
