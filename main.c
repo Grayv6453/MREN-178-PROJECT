@@ -11,7 +11,7 @@
 
 //max resource the hospital can distribute
 #define MAX_BEDS 1000
-#define TOTAL_DOCTORS 100
+#define TOTAL_DOCTORS 2
 #define TOTAL_CLANKERS 500
 #define PAT_TBL_SIZE 23
 
@@ -35,7 +35,7 @@ typedef struct patient {
     int id;
     int tl;
     doctor* assigned_doc;
-struct patient* next; // for hash table chaining
+    struct patient* next; // for hash table chaining
 }patient;
 
 typedef struct{
@@ -113,7 +113,7 @@ void heapify(daheap* heap, int index) {
 int getOUT(daheap* heap, patient* booty){
     if(heap->currentpatients <= 0){
         printf("no patients to boot...\n");
-        return -1;
+        return 0;
     }
     //id of the patient about to get deleted, the one at the very end
     *booty = heap->patients[0];
@@ -303,7 +303,13 @@ patient *pat_table_pop(patient* pat_table, int size, int patient_id) {
         // If prev == NULL, we are at the head of chain.
         if (current->next == NULL) {
             // current is the only node in the chain
-            current->next = NULL;
+            patient* temp = (patient*) malloc(sizeof(patient));
+            temp->id = current->id;
+            temp->assigned_doc = current->assigned_doc;
+            temp->tl = current->tl;
+            temp->next = NULL;
+            current->id = -1; // Mark as empty
+            return temp;
         } else {
             // Move node after current up
             patient* temp = current->next; // TODO: idk if this is correct
@@ -469,7 +475,7 @@ int main(void){
 
                     //dishcharge them, maybe doctor enters their id and patients id
                     printf("Doctor %d has discharded patient %d\n", discharged->assigned_doc->doctor_id, discharged->id);
-                    free(discharged);
+
                     //now check if there is a patient waiting to be treated
                     //-1 is an invalid id
                     if(heap.patients[0].id != -1){
@@ -477,11 +483,16 @@ int main(void){
                         //SHOULD always be true
                         if(getOUT(&heap, &booted)){
                             //now sned patient to hash, will do once implemented
-                            printf("Patient %d was assigned doctor (ID).\n", booted.id);
+                            doctor assigned_doc;
+                            q_dequeue(free_drs, &assigned_doc);
+                            assigned_doc.patient_id = booted.id;
+                            booted.assigned_doc = &assigned_doc;
+                            pat_table_insert(in_treatment, PAT_TBL_SIZE, &booted);
+                            printf("\nPatient %d was assigned doctor %d.\n", booted.id, booted.assigned_doc->doctor_id);
                         }
                     }
                     else{
-                        printf("Doctor (ID) is now on standby.\n");
+                        printf("Doctor %d is now on standby.\n", discharged->assigned_doc->doctor_id);
                     }
                 }
                 else if(iChoice == 3){
