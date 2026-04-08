@@ -537,8 +537,6 @@ int main(void){
                         continue;
                     }
 
-                    printf("doctor id: %d\n", discharged->assigned_doc->doctor_id);
-
                     q_enqueue(free_drs, discharged->assigned_doc);
 
                     //dishcharge them, maybe doctor enters their id and patients id
