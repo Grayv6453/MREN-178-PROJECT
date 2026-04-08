@@ -49,7 +49,12 @@
                     - Triage Level (integer)
                     - Doctor ID (integer)
             
+            If quitting program (option 5)
+                Outputs simple goodbye message
 
+            If anything else is entered as an option
+                Outputs an error message
+                Program loops back prompt user for which operation they will commit
             
 
 
