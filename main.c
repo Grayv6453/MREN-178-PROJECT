@@ -440,7 +440,7 @@ int main(void){
                     //Idea for later (prob won't implement)
                     //prompt user if they want to make a singular entry (1patient), or a file with multiple patients 
                     patient newpatient;
-                    printf("Enter ID: ");
+                    printf("Enter ID (positive integer): ");
                     //if invalid ID is entered
                     if(scanf("%d", &newpatient.id) != 1){
                         newpatient.id = -1;
@@ -448,7 +448,7 @@ int main(void){
                         int c;
                         while ((c = getchar()) != '\n' && c != EOF) { }
                     }
-                    printf("\nEnter Triage level: ");
+                    printf("\nEnter Triage level (positive integer): ");
                     //if invalid triage level is entered
                     if(scanf("%d", &newpatient.tl) != 1){
                         newpatient.tl = -1;
@@ -477,7 +477,7 @@ int main(void){
     
                             if (already_treating != NULL) {
                                 // THEY ARE IN A BED
-                                printf("Hold up! Patient %d is currently being treated by Doctor %d. Cannot add to waiting list.\n", 
+                                printf("Hollup, wait a minute, something ain't right.\nPatient %d is currently being treated by Doctor %d. Cannot add to waiting list.\n", 
                                     already_treating->id, already_treating->assigned_doc->doctor_id);
                             }
                             //ok it really IS a new patient
@@ -520,7 +520,7 @@ int main(void){
                 //if dischargin a patient
                 else if(iChoice == 2){
                     int pat_id;
-                    printf("Enter patient ID to discharge: ");
+                    printf("Enter patient ID to discharge (integer): ");
                     if(scanf("%d", &pat_id) != 1){
                         pat_id = -1;
                         // Clear the bad input from the buffer
@@ -537,7 +537,7 @@ int main(void){
                         continue;
                     }
 
-                    printf("doctor id: %d\n", discharged->assigned_doc->doctor_id);
+                    //printf("doctor id: %d\n", discharged->assigned_doc->doctor_id);
 
                     q_enqueue(free_drs, discharged->assigned_doc);
 
@@ -589,7 +589,7 @@ int main(void){
                 }
                 else{
                 //error
-                    printf("Error, try again.\n");
+                    printf("Error, did not choose a valid option. Try again.\n");
                 }
             }
         }while (iChoice > 0 && iChoice < 6);
