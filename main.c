@@ -572,7 +572,7 @@ int main(void){
                     free(discharged);
                 }
                 else if(iChoice == 3){
-                    //viewing queue
+                    //viewing waiting list
                     showmedasauce(&heap);
                 }
                 else if(iChoice == 5){ // lol ik these arent in order but im too lazy to switch
