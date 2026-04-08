@@ -15,13 +15,31 @@
 
     Description of Inputs, Outputs, and system behaviour:
     The user flow:
-        - User is prompted to choose which operation they want to do
-            - If entering a new user, input:
+        User is prompted to choose which operation they want to do
+            If entering a new user, input:
                 - Patient ID (positive integer)
                 - Triage Level, the severity of the patient's status (positive integer)
 
-                - Then add patient is added to waiting list, or their position is updated if that ID is already registered.
+                Then add patient is added to waiting list, or their position is updated if that ID is already registered.
+
+                Outputs position in line if updated, or an error message if input was bad.
                 
+                Also, program checks if a doctor is available to assign the patient at the root to at this stage.
+
+                Outputs a message confirming patient was assigned a doctor and the doctor's ID, or a message indicating no doctors are available and patient was added to list
+        
+            If discharging a patient from treatment room, input:
+                - Patient ID (positive integer)
+
+                Outputs an error message for bad input, an error message of no patient of that ID is currently being treated, or a confirmation that the patient of ID input was discharged and the doctor with unique ID assigned to them is now free
+
+                System automatically checks if there is a patient on the waiting list (since a doctor is free now),
+
+                so also outputs a messaging confirming patient was assigned a doctor and the doctor's ID, or a message saying the doctor is now on standby
+
+            If
+            
+
             
 
 
