@@ -1,3 +1,20 @@
 // Written by Jayden Roy, Ethan Vu, Akhil Agarwal, Alexander Law
 // The hospital resource manager
 // profesiional
+
+/*
+    We the best music, dj khalid
+    System overview (brief):
+
+    List a data structures and algorithms used:
+        - A heap for the waiting list (holds patients waiting to be treated)
+        - A hash table for the waiting room (holds patients and their assigned doctors)
+        - A heap sort to print the current waiting list in order of highest to lowest priority
+        - A circular buffer to hold the free, unasigned doctors
+
+
+    Descryption of Inputs, Outputs, and system behaviour
+
+
+
+*/
