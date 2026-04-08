@@ -56,7 +56,26 @@
                 Outputs an error message
                 Program loops back prompt user for which operation they will commit
             
+*/
 
+/*
+    Too lazy to make a whole 'nother thang for install.pdf, wil ldo later
+    
+    Required Hardware:
+        - Computer (alternative: compile and run with your brain thought experiment style)
+    
+    Required Software:
+        - UmaOS
+        - Visual Studio Code
+        - compiler needs to compile ig
+        - Libraries: yuri?
+    
+    Instructions on:
 
+    Build/compile:
+        - press the button ig
+
+    Run:
+        - The run button on the top right
 
 */
