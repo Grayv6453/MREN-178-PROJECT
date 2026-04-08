@@ -15,8 +15,8 @@
 
     Description of Inputs, Outputs, and system behaviour:
     The user flow:
-        User is prompted to choose which operation they want to do
-            If entering a new user, input:
+        User is prompted to choose which operation they want to do (an integer for each option)
+            If entering a new user (option 1), input:
                 - Patient ID (positive integer)
                 - Triage Level, the severity of the patient's status (positive integer)
 
@@ -26,18 +26,28 @@
                 
                 Also, program checks if a doctor is available to assign the patient at the root to at this stage.
 
-                Outputs a message confirming patient was assigned a doctor and the doctor's ID, or a message indicating no doctors are available and patient was added to list
+                Outputs a message confirming patient ID (int) was assigned a doctor ID (int), or a message indicating no doctors are available and patient ID (int) was added to list
         
-            If discharging a patient from treatment room, input:
+            If discharging a patient from treatment room (option 2), input:
                 - Patient ID (positive integer)
 
-                Outputs an error message for bad input, an error message of no patient of that ID is currently being treated, or a confirmation that the patient of ID input was discharged and the doctor with unique ID assigned to them is now free
+                Outputs an error message for bad input, an error message that no patient of the input ID (int) is currently being treated, or a confirmation that the patient of ID (int) was discharged and the doctor with unique ID (int) assigned to them is now free
 
                 System automatically checks if there is a patient on the waiting list (since a doctor is free now),
 
-                so also outputs a messaging confirming patient was assigned a doctor and the doctor's ID, or a message saying the doctor is now on standby
+                so also outputs a messaging confirming patient of ID (int) was assigned a doctor of ID (int), or a message saying the doctor is now on standby
 
-            If
+            If viewing waiting list (option 3)
+                No additional input, outputs the waiting list
+                    - Position in line (integer)
+                    - Patient ID (integer)
+                    - Triage Level (integer)
+
+            If viewing the waiting room (option 4)
+                No additional input, outputs all patients being treated
+                    - Patient ID (integer)
+                    - Triage Level (integer)
+                    - Doctor ID (integer)
             
 
             
