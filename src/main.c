@@ -540,7 +540,7 @@ int main(void){
                     q_enqueue(free_drs, discharged->assigned_doc);
 
                     //dishcharge them, maybe doctor enters their id and patients id
-                    printf("Doctor %d has discharded patient %d\n", discharged->assigned_doc->doctor_id, discharged->id);
+                    printf("Doctor %d has discharged patient %d\n", discharged->assigned_doc->doctor_id, discharged->id);
 
                     //now check if there is a patient waiting to be treated
                     //-1 is an invalid id
