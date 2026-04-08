@@ -13,7 +13,16 @@
         - A circular buffer to hold the free, unasigned doctors
 
 
-    Description of Inputs, Outputs, and system behaviour
+    Description of Inputs, Outputs, and system behaviour:
+    The user flow:
+        - User is prompted to choose which operation they want to do
+            - If entering a new user, input:
+                - Patient ID (positive integer)
+                - Triage Level, the severity of the patient's status (positive integer)
+
+                - Then add patient is added to waiting list, or their position is updated if that ID is already registered.
+                
+            
 
 
 
